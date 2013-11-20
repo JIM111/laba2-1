@@ -1,152 +1,135 @@
-// hz.cpp: определяет точку входа для консольного приложения.
-//
-#include "stdafx.h"
-#include "pr1.h"
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
-// Вычисление и выдача результата
-int TClc::show ()
+namespace WindowsFormsApplication1
 {
-	try  // начало блока слежения за ошибками
-	{
-		Clc();
-	
-	} // конец блока слежения за ошибками
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+        int[][] A;
+        //С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ РјР°С‚СЂРёС†С‹
+        static void form_matrix(ref int[][] Matr, int row)
+        {
 
-	// Обработка исключительных ситуаций
-	catch(char* v )  // исключения типа char* со значением v
-	{
-		cout << "\n В нашей программе ошибка!";
-		cout << v << CONTINUE << endl;
-	}
-	catch(...) // Абсолютный обработчик - перехват ВСЕХ исключений
-	{
-		cout << "\n Неожиданная ошибка" << endl;
-		throw;
-	}
+            for (int i = 0; i < Matr.Length; i++)
+            { // РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЃС‚СЂРѕРєРµ 
+                int col = Matr.Length;
+                Matr[i] = new int[col];
+            }
+        }
+        //С„РѕСЂРјРёСЂРѕРІР°РЅРёРµ РјР°С‚СЂРёС†С‹
+        static void Create(int[][] Mas)
+        {
 
-	// продолжение работы функции show
-	return (_getch());
-}
+            for (int i = 0; i < Mas.Length; i++)
+                for (int j = 0; j < Mas.Length; j++)
+                {
+                    if (i == j)
+                        Mas[i][j] = Mas.Length;
+                    if (j < i)
+                        Mas[i][j] = Mas.Length - i+j;
 
-// Проверка диапазона для вещественных данных ( float – по умолчанию, double)
-int CheckFlt(long double t, const double MIN=-FLT_MIN, const double MAX=FLT_MAX)
-{
-	if (fabsl(t)>MAX)
-	{
-		cout << Error_Limits;
-		cout << Explanation	<< MIN << To << MAX << endl;
-		return 1;
-	}
-	return 0;
-}
+                       }
 
+        }
+        //РІС‹РІРѕРґ РјР°С‚СЂРёС†С‹ РЅР° СЌРєСЂР°РЅ РІ DataGridView
+        static void Output_Matrix(int[][] Mas, DataGridView dataGridView1)
+        {
+            //РЅР°С…РѕРґРёРј РјР°РєСЃ С‡РёСЃР»Рѕ СЃС‚СЂРѕРєРѕРІ РІ СЃС‚РѕР»СЊС†РѕРІ 
+            int max_col = Mas[0].Length;
+            for (int i = 0; i < Mas.Length; i++)
+                if (Mas[i].Length > max_col)
+                    max_col = Mas[i].Length;
+            dataGridView1.ColumnCount = 0;//РѕС‡РёСЃС‚РєР°
+            dataGridView1.ColumnCount = max_col;//РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕР»РѕРЅРѕРє
+            dataGridView1.Rows.Add(Mas.Length);//РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє
+            for (int i = 0; i < max_col; i++)//СѓСЃС‚Р°РЅРѕРІРєР° РґР»СЏ СЃС‚РѕР»Р±С†РѕРІ 
+            {
+                //Р·Р°РїСЂРµС‰Р°РµРј РјРµРЅСЏС‚СЊ Р·РЅР°С‡РµРЅРёСЏ СЏС‡РµРµРє
+                dataGridView1.Columns[i].ReadOnly = true;
+                //РѕС‚РєР»СЋС‡РµРЅРёРµ СЂРµР¶РёРјР° СЃРѕСЂС‚РёСЂРѕРІРєРё СЌР»РµРјРµРЅС‚РѕРІ СЃС‚РѕР»Р±С†Р°
+                dataGridView1.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                //Р·Р°РіРѕР»РѕРІРѕРє СЃС‚РѕР»Р±С†РѕРІ
+                dataGridView1.Columns[i].Name = i.ToString();
+                dataGridView1.Columns[i].Width = 30;
+            }
+            //РѕС‚РѕР±СЂР°Р¶РµРЅРёРµ Р·РЅР°С‡РµРЅРёР№ СЌР»РµРјРµРЅС‚РѕРІ РјР°С‚СЂРёС†С‹ РІ DataGridView
+            for (int i = 0; i < Mas.Length; i++)
+                for (int j = 0; j < Mas[i].Length; j++)
+                    //Р·Р°РїРѕР»РЅРµРЅРёРµ СЏС‡РµР№РєРё 
+                    dataGridView1.Rows[i].Cells[j].Value = Mas[i][j].ToString();
+            dataGridView1.Visible = true;
+        }
 
+      
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
-// Проверка диапазона для вещественных данных ( int – по умолчанию, double)
-int Checkint(long double t, const double MIN=INT_MIN, const double MAX=INT_MAX)
-{
-	if (fabsl(t)>MAX)
-	{
-		cout << Error_Limits;
-		cout << Explanation	<< MIN << To << MAX << endl;
-		return 1;
-	}
-	return 0;
-}
+        }
 
-
-// Проверка диапазона для вещественных данных ( double – по умолчанию, double)
-int Checkdbl(long double t, const double MIN=-DBL_MIN, const double MAX=DBL_MAX)
-{
-	if (fabsl(t)>MAX)
-	{
-		cout << Error_Limits;
-		cout << Explanation	<< MIN << To << MAX << endl;
-		return 1;
-	}
-	return 0;
-}
-
-
-// Функция "всепогодного" ввода в переменную k с приглашением INVITE
-template <class T>
-int input (T& k, const char INVITE)
-{  // Открытие своего входного потока с консоли
-	ifstream my_inp ("CON");
-	long double t;
-	cout << "\n Введите значение переменной " << INVITE
-		<< "  типа  " << typeid(k).name() << " ===> ";
-	if (typeid(T)==typeid (float) || typeid(T)==typeid (int) || typeid(T)==typeid (double))
-		my_inp >> t;
-	else 
-		my_inp >> k;  // ввод целочисленных переменных и типа double       
-
-	switch (my_inp.rdstate()) 
-	{ case ios::goodbit:    
-	case ios::eofbit :
-
-		// контроль диапазонов
-		if (typeid(T)==typeid (float))
-			if(CheckFlt(t)) return 1;
-		if (typeid(T)==typeid (float)) k=(T)t;
-		// контроль диапазонов
-		if (typeid(T)==typeid (int))
-			if(Checkint(t)) return 1;
-		if (typeid(T)==typeid (int)) k=(T)t;
-		// контроль диапазонов
-		if (typeid(T)==typeid (double))
-			if(Checkdbl(t)) return 1;
-		if (typeid(T)==typeid (double)) k=(T)t;
-		return 0;    // Все в порядке!
-	case ios::failbit:             // Есть ошибки ввода символов
-	case ios::badbit :
-		cout << "\nВведен символ вместо цифры ";
-		cout << "\nПопробуйте еще раз..." << endl;
-		return 1;
-	};
-	cout << "\nОшибка во время ввода" << endl;
-	return 1;
-}
-
-template <class Ta,  class Tc, class Td>
-void inputData(Ta& a,  Tc& c, Td& d)
-{
-
-	while (input(a, 'A'));//пользоват.
-	cout <<"Введите значение A = " << a << endl;
-	while (input(d, 'D'));
-	cout <<"Введите значение D = " << d << endl;
-	while (input(c, 'C'));
-	cout <<"Введите значение C = " << c << endl;
-
-}
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            {
 
 
-int _tmain(int argc, _TCHAR* argv[])
-{
-	SetConsoleOutputCP(1251); 
-	int ESC=27, tt, t=0;
-	int c;
-	float a;
-	double d;
-	cout<<setprecision(16);
-#ifdef _DEBUG
-	cout << "--- DEBUGGING ---" << endl;
-#endif
-	do    // работать будем в цыкле до выхода по ESC
-	{
-		cout << "\n--- Тест №" << ++t << " ---" << endl;
-		cout << "\n Вариант 4" << endl;
-		cout << "        log(2*c-a)+d-152  " << endl;
-		cout << "   y= -----------" << endl;
-		cout << "       a/4+с" << endl;
-		inputData(a, c, d);
-		TClc Object(a, c, d);
-		tt=Object.show();
-	} while (tt!=ESC);// конец цикла
-#ifdef _DEBUG
-	system ("PAUSE");
-#endif
-	return 0;
+                try
+                { //РєРѕР»РёС‡РµСЃС‚РІРѕ СЃС‚СЂРѕРє РјР°С‚СЂРёС†С‹
+                    int str = int.Parse(textBox1.Text);
+                    if (str < 1) { MessageBox.Show("РќРµРєРѕСЂСЂРµРєС‚РЅС‹Р№ СЂР°Р·РјРµСЂ РјР°С‚СЂРёС†С‹", "РћС€РёР±РєР°!", MessageBoxButtons.OK, MessageBoxIcon.Error); return; }
+                    //РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РїРѕРґ СЃС‚СЂРѕРєРё РјР°С‚СЂРёС†С‹
+                    Array.Resize(ref A, str);
+                    //Р·Р°РїРѕР»РЅСЏРµРј РјР°С‚СЂРёС†Сѓ СЃР»СѓС‡Р°Р№РЅС‹РјРё С‡РёСЃР»Р°РјРё
+                    form_matrix(ref A, str);
+                    //РІС‹РІРѕРґРёРј РјР°С‚СЂРёС†Сѓ РІ DataGridView
+                    Create(A);
+                    //РІС‹РІРѕРґРёРј РјР°С‚СЂРёС†Сѓ РІ DataGridView
+                    Output_Matrix(A, dataGridView1);
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show("Р’РІРѕРґРёС‚СЊ С‚РѕР»СЊРєРѕ С†РёС„СЂС‹!", "РћС€РёР±РєР°!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+        }
+        // СѓРґР°Р»РµРЅРёСЏ РјР°С‚СЂРёС†С‹ 
+        void Delete(ref int[][] mat, int i, int j)
+        {
+            for (; j < mat[i].Length - 1; j++)
+                mat[i][j] = mat[i][j + 1];
+            Array.Resize(ref mat, mat.Length - 1);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            float n = A[0].Length / 2;
+            dataGridView2.ColumnCount = dataGridView2.RowCount = A[0].Length;
+             for (int i = 0; i < A[0].Length; i++)
+            {
+                 //Р·Р°РїСЂРµС‰Р°РµРј РјРµРЅСЏС‚СЊ Р·РЅР°С‡РµРЅРёСЏ СЏС‡РµРµРє
+                dataGridView2.Columns[i].ReadOnly = true;
+                //РѕС‚РєР»СЋС‡РµРЅРёСЏ СЂРµР¶РёРјР° СЃРѕСЂС‚РёСЂРѕРІРєРё СЌРµР»РµРјРµРЅС‚РѕРІ СЃС‚РѕР»Р±С†Р° 
+                dataGridView2.Columns[i].SortMode = DataGridViewColumnSortMode.NotSortable;
+                 //Р·Р°РіРѕР»РѕРІРѕРє СЃС‚РѕР»Р±С†Р°
+                dataGridView2.Columns[i].Name = i.ToString();
+                dataGridView2.Columns[i].Width = 25 ; //С€РёСЂРёРЅР° СЃС‚РѕР»Р±С†Р° 
+            }
+            
+            for (int i = 0; i <  A[0].Length; i++)
+                for (int j = 0; j < A[i].Length; j++)
+                    if (A[i][j] < n)
+                        dataGridView2.Rows[i].Cells[j].Value = A[i][j].ToString();
+       
+        }
+    }
 }
 
