@@ -11,7 +11,7 @@ cout<<"Введите значение B "<<endl;
 cin>> b;
 c=a+b;
 cout<<"Ответ"<<c<<endl;
-if(c==10)
+if(c==10) 
 	d=c-2;
 cout<<"Ответ"<<d<<endl;
 return 0;
