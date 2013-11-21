@@ -5,6 +5,7 @@ using namespace std;
 int main()
 { int a, b,c,d;
 SetConsoleOutputCP(1251);
+cout<<" Операция на +"<<endl;
 cout<<"Введите значение А "<<endl;
 cin>> a;
 cout<<"Введите значение B "<<endl;
